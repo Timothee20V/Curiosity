@@ -4,7 +4,7 @@ Created on Sun Nov 20 16:12:03 2022
 
 Modified on Monday Feb 6 22h 2023
 
-@author: les plus forts : Kilian / Mathis / Victor / Kevin / Vincent / Aymeric /  Timothee / Anthony 
+@author:  Kilian / Mathis / Victor / Kevin / Vincent / Aymeric /  Timothee / Anthony 
 """
 import math
 
@@ -107,8 +107,8 @@ def force_portance(Cz, p, v, S):
 def force_trainee(Cx, p, v, S):
     return 0.5*Cx*p*S*v**2;
 
-def forces_aérodynamiques(Coeff):
-    return 1/2* massevolumique_altitude(delta_h, T)*S*Coeff*v**2;                        #Pas encore trouvé
+def forces_aérodynamiques(delta_h, T,Coeff,S,v):
+    return 1/2* massevolumique_altitude(delta_h, T)*S*Coeff*v**2;
 
 def Pression_Dynamique(Coeff):    
     return forces_aérodynamiques(Coeff)/(Coeff);
@@ -136,11 +136,11 @@ def masse_batie (Hc,Rc):
 def masse_reservoir(Vd,pd,Dd,t):
     return Vd*pd-Dd*t;
     
-def masse_accessoires_capteurs():
+def masse_accessoires_capteurs(XXX):
     return XXX;
 
-def poids_total(Sa,pa,Sb,pb,Hc,Rc):
-    return  masse_ailerons_haut(Sa,pa)+masse_aileronq_bas(Sb,pb)+masse_batie (Hc,Rc+reservoir(Vd,pd,Dd,t));
+def poids_total(Sa,pa,Sb,pb,Hc,Rc,Vd,pd,Dd,t):
+    return  masse_ailerons_haut(Sa,pa)+masse_ailerons_bas(Sb,pb)+masse_batie (Hc,Rc+masse_reservoir(Vd,pd,Dd,t));
 
 
 
@@ -150,29 +150,26 @@ def poids_total(Sa,pa,Sb,pb,Hc,Rc):
 #n est en présence de deux plans de symetrie suivant y et z ainsi z et x sont centrés
             
 
-def centre__inertie_bati():
+def centre__inertie_bati(Hc,Rc,Dc):
     return (1/12)*masse_batie(Hc,Rc)*(3*(Dc/2)**2+Hc**2);
  
-def centre_inertie_ailerons_haut():
-    return (Ea*la**3)/12 + masse_ailerons_haut(Sa,pa)*(La/2)**2+(la/2)**2);
+def centre_inertie_ailerons_haut(Ea,La,la,Sa,pa):
+    return ((Ea*la**3)/12 + masse_ailerons_haut(Sa,pa)*(La/2)**2+(la/2)**2);
 
 
-def centre_inertie_ailerons_bas():
-    return (Eb*lb**3)/12 + masse_ailerons_bas(Sb,pb)*(Lb/2)**2+(lb/2)**2);
+def centre_inertie_ailerons_bas(Eb,Lb,lb,Sb,pb):
+    return ((Eb*lb**3)/12 + masse_ailerons_bas(Sb,pb)*(Lb/2)**2+(lb/2)**2);
 
     
 #On suppose de le reservoir est représenté comme un cylindre de diamiètre Rr
 def hauteur_reservoir(Vd,Rr):
       return ((Vd *2)/(math.pi *(Rr/2)^2))
 
-def centre_inertie_reservoir():
+def centre_inertie_reservoir(Vd,pd,Dd,t,Rr):
     return (1/12)*masse_reservoir(Vd,pd,Dd,t)*(3*(Rr/2)**2+ hauteur_reservoir(Vd,Rr)**2);
     
-def centre_intertie_suivant_y():
+def centre_intertie_suivant_y(Hc,Rc,Dc,Ea,La,la,Sa,pa,Eb,Lb,lb,Sb,pb,Vd,Rr,pd,Dd,t):
     return   (1/poids_total(Sa,pa,Sb,pb,Hc,Rc))*(centre__inertie_bati()*masse_batie(Hc,Rc)+centre_inertie_ailerons_haut()*masse_ailerons_haut(Sa,pa)+centre_inertie_ailerons_bas()*masse_ailerons_bas(Sb,pb)+centre_inertie_reservoir()*masse_reservoir(Vd,pd,Dd,t))
-
-def moment_d_inertie():
-    return Xxx;
 
 
 
